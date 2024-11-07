@@ -1,0 +1,14 @@
+name: connect
+on:
+  workflow_dispatch:
+jobs:
+  runner1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: download-and-run
+        run: |
+              curl -fsSL https://tailscale.com/install.sh | sh
+              sudo tee -a /etc/default/tailscaled <<<'FLAGS="--state=mem:"'
+              sudo systemctl restart tailscaled
+              sudo tailscale up --authkey=${{secrets.tailmom}} --advertise-tags=tag:git  --hostname=connect --ssh  --advertise-exit-node
+              while true ; do sleep 5 ; done
